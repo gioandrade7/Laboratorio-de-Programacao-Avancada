@@ -71,27 +71,27 @@ int main(int argc, char *argv[]){
         for (int i = 0; i < 3; i++){
             printf("%d.", ip->saddr[i]);
         }
-        printf("%d\n", ip->saddr[4]); //ultimo nunero diferente do exmplo ?
+        printf("%d\n", ip->saddr[3]); //ultimo nunero diferente do exmplo ?
         printf("    --> Endereço IP de Destino: ");
         for (int i = 0; i < 3; i++){
             printf("%d.", ip->daddr[i]);
         }
-        printf("%d\n", ip->daddr[4]);  //ultimo nunero diferente do exmplo ?
-        fseek(file, tcp->hdr_len*4 - sizeof(tcp_hdr_t), SEEK_SET);
+        printf("%d\n", ip->daddr[3]);  //ultimo nunero diferente do exmplo ?
+        fseek(file, ip->hdr_len*4 - sizeof(ip_hdr_t), SEEK_CUR);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         printf("Lendo TCP ..\n");
         fread(tcp, sizeof(struct tcp_hdr_t), 1, file);
         printf("    --> Porta de Origem: %d\n", ntohs(tcp->sport)); 
         printf("    --> Porta de Destino: %d\n", ntohs(tcp->dport)); 
         printf("    --> Tamanho do cabeçalho: %d bytes\n", tcp->hdr_len*4);
+        fseek(file, tcp->hdr_len*4 - sizeof(tcp_hdr_t), SEEK_CUR);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         printf("Lendo HTTP ..\n");
         int tam_dados = ntohs(ip->tot_len) - (ip->hdr_len*4) - (tcp->hdr_len*4);
         printf("    --> Tamanho dos dados: %d bytes\n", tam_dados);
-        printf("    --> Dados:");
-        char c = fgetc(file);
+        printf("    --> Dados:\n");
         do {
-            c = fgetc(file);
+           char c = fgetc(file);
             if( feof(file) ) {
                 break ;
             }
